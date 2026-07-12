@@ -11,6 +11,21 @@ Basado en el estudio de **Stanzani Maserati & Zama (2026)** publicado en *Scient
 **Autores:** Maserati & Zama (IRCCS Bolonia, Italia)
 **Muestra:** 1,379 participantes (613 EA, 328 DCL, 438 controles sanos)
 
+### Base de datos del estudio
+
+Los datos provienen de la **base de datos clínica del IRCCS Istituto delle Scienze Neurologiche di Bologna** (Bolonia, Italia), una de las instituciones de referencia en neurología cognitiva en Europa.
+
+**Reclutamiento:** Los participantes fueron seleccionados de la consulta externa de neurología y de la unidad de memoria del hospital entre 2018 y 2024. Todos los sujetos pasaron por una evaluación diagnóstica estandarizada que incluyó:
+
+- Evaluación neurológica completa
+- Evaluación neuropsicológica exhaustiva (MMSE, batería de tests frontales, tests de memoria y función ejecutiva)
+- Neuroimagen (RM o TAC cerebral)
+- Análisis de laboratorio para descartar causas reversibles de deterioro cognitivo
+
+**Criterios diagnósticos:** Los diagnósticos se establecieron según los criterios clínicos estándar — NIA-AA para enfermedad de Alzheimer y Petersen para Deterioro Cognitivo Leve — por un equipo multidisciplinario que desconocía los resultados del TDT al momento de clasificar a los pacientes.
+
+**Variable principal:** El índice H/φ − T se calculó a partir de las mediciones manuales del dibujo (altura total H, altura del tronco T) realizadas por dos evaluadores independientes cegados al diagnóstico, con alta concordancia inter-evaluador (ICC > 0.90).
+
 ### ¿De qué trata?
 
 Analizaron el Test del Dibujo del Árbol (TDT) —pedirle al paciente que dibuje un árbol— y calcularon qué tanto se desvía la proporción tronco/copa de la proporción áurea (φ ≈ 1.618). El mejor índice fue **H/φ − T** (altura total entre φ menos altura del tronco).
