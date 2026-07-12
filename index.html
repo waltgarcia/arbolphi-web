@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arbol φ">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAy0lEQVRYhe2X0Q2CMBCG/1aHcARHcAQX0BF0A3UDXUEdQUdwgzqCLqAb6AbKAzWhKeUoXHJJL/lJw/H93dFrr2UGk8lkMgqAayEEAG4AQggnAHfnXJo7/8cDWu+991rrT9d1H+dcaa19ta1SSpVlWZrneR2GIQ3D8HXOvYwxT2PMT9d1n865Qmud2hhf3vdeKMGttTb3+x2r1QoAoLWGc24NANZaiqLIdkKMMQ3D8CGEgNqj1rpSSn3bth+GYd1155wHABiGYd11XYdzTggBxhhKKSElEgqFQqGYlCdTWQkYQR+QTgAAAABJRU5ErkJggg==">
+<title>Arbol φ — Test del Árbol con Proporción Áurea</title>
+<style>
+:root {
+  --bg: #0f0f23;
+  --card: #1a1a2e;
+  --card2: #16213e;
+  --accent: #e94560;
+  --gold: #f5c518;
+  --phi: #00d4aa;
+  --text: #e0e0e0;
+  --text2: #a0a0b0;
+  --green: #2ecc71;
+  --orange: #f39c12;
+  --red: #e74c3c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden
+}
+.container{max-width:600px;margin:0 auto;padding:12px 12px 80px}
+
+/* ===== INTRO OVERLAY ===== */
+#introOverlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.85);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;overflow-y:auto
+}
+.intro-card{
+  background:var(--card);border-radius:20px;padding:24px 20px;
+  max-width:520px;width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative
+}
+.intro-card h1{
+  font-size:1.4em;text-align:center;margin-bottom:4px;
+  background:linear-gradient(135deg,var(--gold),var(--phi));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text
+}
+.intro-card .subtitle{text-align:center;font-size:.8em;color:var(--text2);margin-bottom:12px}
+.intro-section{margin-bottom:14px}
+.intro-section h3{
+  font-size:.9em;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px
+}
+.intro-section p,.intro-section li{font-size:.8em;color:var(--text2);line-height:1.6}
+.intro-section ol{padding-left:20px}
+.intro-section ol li{margin-bottom:6px}
+.intro-section strong{color:var(--text)}
+.steps-visual{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;justify-content:center}
+.steps-visual .step-box{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  background:var(--card2);padding:10px 12px;border-radius:10px;flex:1;min-width:70px
+}
+.steps-visual .step-box .num{
+  width:24px;height:24px;border-radius:12px;display:flex;
+  align-items:center;justify-content:center;
+  font-size:.7em;font-weight:700;color:#000
+}
+.steps-visual .step-box .num.n1{background:var(--gold)}
+.steps-visual .step-box .num.n2{background:var(--accent)}
+.steps-visual .step-box .num.n3{background:var(--phi)}
+.steps-visual .step-box .icon{font-size:1.4em}
+.steps-visual .step-box .label{font-size:.6em;color:var(--text2);text-align:center}
+.phi-facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.phi-facts .fact{
+  background:var(--card2);border-radius:8px;padding:8px;text-align:center;font-size:.72em
+}
+.phi-facts .fact .val{color:var(--phi);font-weight:700;font-size:.9em}
+.footer-note{border-left:3px solid var(--gold);padding:8px 10px;font-size:.75em;color:var(--text2);margin-top:10px}
+.footer-note a{color:var(--phi);text-decoration:none}
+.btn-start{
+  width:100%;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--phi),#00b894);color:#000;
+  font-size:.95em;font-weight:700;cursor:pointer;margin-top:12px
+}
+.btn-start:active{transform:scale(.97)}
+.mascot{text-align:center;font-size:2.5em;margin:8px 0}
+
+/* ===== MAIN APP ===== */
+header{
+  text-align:center;padding:16px 0 8px;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+  border-radius:16px;margin-bottom:16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);position:relative
+}
+header h1{
+  font-size:1.5em;font-weight:700;
+  background:linear-gradient(135deg,var(--gold),var(--phi));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text
+}
+header p{font-size:.75em;color:var(--text2);margin-top:4px}
+header .phi-badge{
+  display:inline-block;background:var(--phi);color:#000;
+  padding:2px 10px;border-radius:20px;font-size:.65em;font-weight:700;margin-top:6px
+}
+header .help-btn{
+  position:absolute;top:8px;right:12px;
+  background:var(--card2);border:1px solid #333;border-radius:50%;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1em;font-weight:700;color:var(--text2)
+}
+header .help-btn:active{background:var(--accent)}
+
+.card{
+  background:var(--card);border-radius:12px;padding:16px;
+  margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.2)
+}
+.card h2{
+  font-size:1em;font-weight:600;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px
+}
+.card h2 .icon{font-size:1.2em}
+
+/* Info card */
+.info-card{
+  background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(245,197,24,.05));
+  border:1px solid rgba(0,212,170,.2);border-radius:12px;padding:14px 16px;margin-bottom:12px
+}
+.info-card h3{font-size:.85em;font-weight:600;margin-bottom:6px;color:var(--phi)}
+.info-card p{font-size:.75em;color:var(--text2);line-height:1.6}
+.info-card .tag{
+  display:inline-block;background:var(--phi);color:#000;font-size:.6em;
+  font-weight:600;padding:1px 8px;border-radius:10px;margin-right:4px
+}
+
+.btn-group{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  flex:1;min-width:100px;padding:12px 16px;border:none;border-radius:10px;
+  font-size:.85em;font-weight:600;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px
+}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#c0392b);color:#fff}
+.btn-secondary{background:var(--card2);color:var(--text);border:1px solid #333}
+.btn-phi{background:linear-gradient(135deg,var(--phi),#00b894);color:#000}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e6a800);color:#000}
+.btn-sm{padding:8px 14px;font-size:.75em;min-width:auto}
+
+.upload-area{
+  border:2px dashed #333;border-radius:12px;padding:30px 16px;
+  text-align:center;cursor:pointer;transition:all .2s
+}
+.upload-area:hover,.upload-area:active{border-color:var(--accent);background:rgba(233,69,96,.05)}
+.upload-area .icon{font-size:2.5em;display:block;margin-bottom:8px}
+.upload-area p{font-size:.85em;color:var(--text2)}
+
+#photoContainer{position:relative;margin-top:12px;display:none}
+#photoContainer img,#photoContainer canvas{
+  width:100%;border-radius:8px;display:block;touch-action:none
+}
+#photoCanvas{position:absolute;top:0;left:0;width:100%;height:100%}
+
+.measure-hint{
+  text-align:center;font-size:.8em;color:var(--text2);margin:8px 0
+}
+.measure-hint strong{color:var(--gold)}
+
+.points-status{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.point-chip{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;
+  border-radius:20px;font-size:.75em;font-weight:500
+}
+.point-chip.done{background:var(--phi);color:#000}
+.point-chip.waiting{background:var(--card2);color:var(--text2);border:1px dashed #444}
+
+.result-card{display:none}
+.result-header{
+  text-align:center;padding:16px;border-radius:12px;margin-bottom:12px
+}
+.result-header.ad{background:linear-gradient(135deg,#c0392b33,#e74c3c22)}
+.result-header.mci{background:linear-gradient(135deg,#f39c1233,#e67e2222)}
+.result-header.ctrl{background:linear-gradient(135deg,#2ecc7133,#27ae6022)}
+.result-header h3{font-size:1.2em;font-weight:700}
+.result-header .badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  font-size:.7em;font-weight:600;margin-top:6px
+}
+.result-header.ad .badge{background:var(--red);color:#fff}
+.result-header.mci .badge{background:var(--orange);color:#000}
+.result-header.ctrl .badge{background:var(--green);color:#000}
+
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.metric{
+  background:var(--card2);border-radius:10px;padding:10px;text-align:center
+}
+.metric .label{font-size:.65em;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.metric .value{font-size:1.1em;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.metric .value.phi-highlight{color:var(--phi)}
+
+.comparison-table{width:100%;border-collapse:collapse;font-size:.78em;margin-top:10px}
+.comparison-table th,.comparison-table td{
+  padding:8px 6px;text-align:center;border-bottom:1px solid #222
+}
+.comparison-table th{color:var(--text2);font-weight:500}
+.comparison-table tr.highlight{background:rgba(0,212,170,.08)}
+.comparison-table .best{color:var(--phi);font-weight:700}
+
+.fib-display{text-align:center;margin:12px 0}
+.fib-display .fib-num{
+  display:inline-block;padding:6px 14px;margin:3px;
+  background:var(--card2);border-radius:8px;font-size:.75em
+}
+.fib-display .fib-num.match{
+  background:linear-gradient(135deg,var(--gold),var(--phi));color:#000;font-weight:700
+}
+
+.note{
+  background:rgba(245,197,24,.08);border-left:3px solid var(--gold);
+  padding:10px 12px;border-radius:0 8px 8px 0;font-size:.75em;color:var(--text2);margin-top:10px
+}
+
+footer{
+  text-align:center;padding:20px;font-size:.65em;color:var(--text2)
+}
+footer a{color:var(--phi);text-decoration:none}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+@media(min-width:600px){
+  .container{padding:20px}
+  header h1{font-size:2em}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO OVERLAY (primera vez / ayuda) ===== -->
+<div id="introOverlay">
+  <div class="intro-card" id="introCard">
+    <div class="mascot">🌳</div>
+    <h1>Arbol φ</h1>
+    <p class="subtitle">Test del Árbol + Proporción Áurea (φ) para detección de deterioro cognitivo</p>
+
+    <div class="intro-section">
+      <h3>🧠 ¿Qué hace esta app?</h3>
+      <p>
+        Toma la foto del dibujo de un árbol, mide su tronco y copa, y calcula qué
+        <strong>tan lejos está de la proporción áurea</strong> (φ ≈ 1.618).
+      </p>
+      <p style="margin-top:6px">
+        Basado en el estudio científico de Stanzani Maserati &amp; Zama (2026) publicado en
+        <strong>Scientific Reports</strong> con <strong>1,379 pacientes</strong>,
+        donde encontraron que el índice <strong>H/φ−T</strong> correlaciona con:
+      </p>
+      <div class="phi-facts">
+        <div class="fact"><div class="val">AD → 5.24</div>Alzheimer · F(5)=5</div>
+        <div class="fact"><div class="val">MCI → 12.96</div>Deterioro Cognitivo · F(7)=13</div>
+        <div class="fact"><div class="val">Sano → 33.68</div>Control · F(9)=34</div>
+        <div class="fact"><div class="val">AUC 0.834</div>Precisión del modelo</div>
+      </div>
+    </div>
+
+    <div class="intro-section">
+      <h3>📋 ¿Qué necesito?</h3>
+      <p>Un dibujo de un árbol hecho a lápiz/pluma en una hoja de papel (idealmente tamaño A4).</p>
+    </div>
+
+    <div class="intro-section">
+      <h3>👆 ¿Cómo se usa?</h3>
+      <div class="steps-visual">
+        <div class="step-box">
+          <div class="num n1">1</div>
+          <div class="icon">📸</div>
+          <div class="label">Captura el dibujo</div>
+        </div>
+        <div class="step-box">
+          <div class="num n2">2</div>
+          <div class="icon">👆</div>
+          <div class="label">Marca 3 puntos</div>
+        </div>
+        <div class="step-box">
+          <div class="num n3">3</div>
+          <div class="icon">🌀</div>
+          <div class="label">Calcula y obtén resultado</div>
+        </div>
+      </div>
+      <ol>
+        <li><strong>Captura</strong> — Toma una foto del dibujo con 📷 Cámara o cárgalo desde 🖼️ Galería</li>
+        <li><strong>Marca 3 puntos</strong> tocando la pantalla en:
+          <br>🟡 <strong>Punta de la copa</strong> (arriba del todo)
+          <br>🔴 <strong>Base del tronco</strong> (abajo del todo)
+          <br>🟢 <strong>Unión tronco-copa</strong> (donde termina el tronco)
+        </li>
+        <li><strong>Calcula</strong> — Toca 🌀 Calcular y la app te mostrará:
+          <br>📐 Medidas H, T, C · 🌀 Índices φ · 📊 Correlación diagnóstica</li>
+      </ol>
+    </div>
+
+    <div class="intro-section">
+      <h3>📊 ¿Qué resultados obtendré?</h3>
+      <p>
+        La app estima si el dibujo se parece más a los patrones de pacientes con
+        <strong>Alzheimer (AD)</strong>, <strong>Deterioro Cognitivo Leve (MCI)</strong>,
+        o <strong>Controles Sanos (CNTRL)</strong>, basado en los datos del artículo científico.
+      </p>
+    </div>
+
+    <div class="footer-note">
+      ⚠️ <strong>Importante:</strong> Esta es una <strong>herramienta de investigación</strong>.
+      No reemplaza una evaluación clínica neuropsicológica completa.
+      Los resultados son orientativos y deben ser interpretados por un profesional de la salud.
+      <br><br>
+      📖 Basado en: Stanzani Maserati M., Zama F. (2026).
+      <em>"Quantifying golden-ratio deviations in the Tree Drawing Test to identify patients with Alzheimer's disease"</em>.
+      Scientific Reports. <a href="https://doi.org/10.1038/s41598-026-61257-4" target="_blank">DOI: 10.1038/s41598-026-61257-4</a>
+    </div>
+
+    <button class="btn-start" onclick="closeIntro()">✓ Entendido, ¡empecemos!</button>
+  </div>
+</div>
+
+<!-- ===== APP PRINCIPAL ===== -->
+<div class="container" id="app">
+  <header>
+    <h1>🌳 Arbol φ</h1>
+    <p>Test del Árbol · Proporción Áurea · Alzheimer</p>
+    <span class="phi-badge">φ = 1.618</span>
+    <button class="help-btn" onclick="showIntro()" title="¿Cómo se usa?">?</button>
+  </header>
+
+  <!-- Card informativo -->
+  <div class="info-card">
+    <h3>🧪 ¿Qué hace esto?</h3>
+    <p>
+      Captura un dibujo de árbol, marca <strong>3 puntos</strong> en la pantalla
+      (copa, base, unión tronco-copa) y la app calcula la <strong>desviación de la
+      proporción áurea</strong> para correlacionarlo con patrones de
+      <span class="tag">Alzheimer</span>
+      <span class="tag">DCL</span>
+      <span class="tag">Control Sano</span>
+      según el estudio en Scientific Reports (2026).
+      ¿Dudas? Toca el <strong>?</strong> de arriba.
+    </p>
+  </div>
+
+  <div class="card" id="stepCapture">
+    <h2><span class="icon">📸</span> 1. Capturar el dibujo</h2>
+    <p style="font-size:.75em;color:var(--text2);margin-bottom:10px">
+      Tu árbol dibujado a lápiz en una hoja de papel. Con buena luz y centrado.
+    </p>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnCamara" onclick="abrirCamara()">📷 Cámara</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">🖼️ Galería</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadFile(event)">
+    <!-- Vista previa de cámara en vivo -->
+    <div id="cameraView" style="display:none;margin-top:10px">
+      <video id="videoPreview" autoplay playsinline style="width:100%;border-radius:8px;background:#000"></video>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" onclick="tomarFoto()">📸 Tomar foto</button>
+        <button class="btn btn-secondary" onclick="cerrarCamara()">✕ Cancelar</button>
+      </div>
+    </div>
+    <div id="photoContainer">
+      <img id="photoDisplay" alt="Dibujo del árbol">
+      <canvas id="photoCanvas"></canvas>
+    </div>
+    <div class="measure-hint" id="hintArea" style="display:none">
+      <p>👉 Toca la pantalla para marcar <strong>3 puntos</strong> en el orden mostrado:</p>
+      <p style="font-size:.7em;margin-top:4px;color:var(--text2)">
+        🟡 ① Copa (punta arriba) → ② Base (abajo) → ③ Unión tronco-copa
+      </p>
+    </div>
+    <div class="points-status" id="pointsStatus" style="display:none">
+      <span class="point-chip waiting" id="chip1">🟡 ① Copa ⏳</span>
+      <span class="point-chip waiting" id="chip2">🔴 ② Base ⏳</span>
+      <span class="point-chip waiting" id="chip3">🟢 ③ Unión ⏳</span>
+    </div>
+    <div id="scaleArea" style="display:none;margin-top:8px">
+      <label style="font-size:.78em;color:var(--text2);display:block;margin-bottom:4px">📏 Alto del papel en cm (opcional, para escala):</label>
+      <div style="display:flex;gap:8px">
+        <input type="number" id="paperCm" value="29.7" step="0.1" min="1" max="100"
+               style="flex:2;padding:10px 12px;border-radius:8px;border:1px solid #333;background:var(--card2);color:var(--text);font-size:.9em">
+        <button class="btn btn-sm btn-secondary" onclick="detectPaper()">Auto</button>
+      </div>
+      <p style="font-size:.65em;color:var(--text2);margin-top:4px">A4 = 29.7cm. Si es otro papel, ajústalo. La escala mejora la precisión en mm.</p>
+    </div>
+    <button class="btn btn-phi" id="btnCalculate" style="display:none;margin-top:8px" onclick="calculateAll()">
+      🌀 Calcular índices φ
+    </button>
+  </div>
+
+  <div class="card result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
+      <h3 id="resultTitle">—</h3>
+      <span class="badge" id="resultBadge">—</span>
+    </div>
+
+    <h2 style="font-size:.9em;margin-bottom:8px">📐 Medidas del árbol</h2>
+    <div class="metrics-grid" id="measuresGrid"></div>
+
+    <h2 style="font-size:.9em;margin:12px 0 8px">🌀 Índices de Proporción Áurea</h2>
+    <div class="metrics-grid" id="phiGrid"></div>
+
+    <div id="fibSection" style="display:none;margin-top:12px">
+      <h2 style="font-size:.9em;margin-bottom:8px">🔢 Alineación Fibonacci</h2>
+      <div class="fib-display" id="fibDisplay"></div>
+    </div>
+
+    <h2 style="font-size:.9em;margin:12px 0 8px">📊 Correlación diagnóstica</h2>
+    <div style="font-size:.7em;color:var(--text2);margin-bottom:6px">¿A qué grupo del estudio se parece más tu dibujo?</div>
+    <table class="comparison-table" id="diagTable"></table>
+
+    <div class="note" id="conclusionNote">
+      ⚠️ Herramienta de investigación. No reemplaza evaluación clínica.
+      Basado en Stanzani Maserati & Zama (2026), Sci Rep.
+    </div>
+
+    <button class="btn btn-gold" style="margin-top:12px" onclick="resetAll()">🔄 Nuevo análisis</button>
+    <button class="btn btn-secondary" style="margin-top:6px" onclick="showIntro()">❓ Ver instrucciones otra vez</button>
+  </div>
+</div>
+
+<footer>
+  Basado en Stanzani Maserati M., Zama F. (2026)<br>
+  <em>Quantifying golden-ratio deviations in the TDT to identify patients with Alzheimer's disease</em><br>
+  Scientific Reports · <a href="https://doi.org/10.1038/s41598-026-61257-4" target="_blank">DOI: 10.1038/s41598-026-61257-4</a>
+</footer>
+
+<script>
+// ====================================================================
+// CONSTANTES DEL ARTÍCULO
+// ====================================================================
+const PHI = (1 + Math.sqrt(5)) / 2;
+const PHI2 = PHI + 1;
+
+const REF = {
+  AD:    {mean:5.24, sd:10.67, n:613, fib:5,  label:"Alzheimer"},
+  MCI:   {mean:12.96,sd:11.31, n:328, fib:13, label:"Deterioro Cognitivo Leve"},
+  CNTRL: {mean:33.68,sd:27.28, n:438, fib:34, label:"Control Sano"},
+};
+
+// ====================================================================
+// INTRO
+// ====================================================================
+function showIntro() {
+  document.getElementById('introOverlay').style.display = 'flex';
+}
+function closeIntro() {
+  document.getElementById('introOverlay').style.display = 'none';
+  localStorage.setItem('arbolph_intro_visto', '1');
+}
+
+// Primera vez -> mostrar intro
+if (!localStorage.getItem('arbolph_intro_visto')) {
+  setTimeout(() => { document.getElementById('introOverlay').style.display = 'flex'; }, 300);
+} else {
+  document.getElementById('introOverlay').style.display = 'none';
+}
+
+// ====================================================================
+// ESTADO
+// ====================================================================
+let state = {
+  imageLoaded: false, points: [],
+  img: null, imgCanvas: null, imgCtx: null, overlayCtx: null,
+  scaleX: 1, scaleY: 1
+};
+
+// ====================================================================
+// CAPTURA: CÁMARA EN VIVO (getUserMedia)
+// ====================================================================
+let cameraStream = null;
+
+function abrirCamara() {
+  document.getElementById('cameraView').style.display = 'block';
+  document.getElementById('btnCamara').disabled = true;
+  document.getElementById('btnCamara').textContent = '⏳ Abriendo cámara...';
+  document.getElementById('photoContainer').style.display = 'none';
+  document.getElementById('hintArea').style.display = 'none';
+  document.getElementById('pointsStatus').style.display = 'none';
+  document.getElementById('scaleArea').style.display = 'none';
+  document.getElementById('btnCalculate').style.display = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: {ideal: 1920}, height: {ideal: 1080} }
+    }).then(function(stream) {
+      cameraStream = stream;
+      const video = document.getElementById('videoPreview');
+      video.srcObject = stream;
+      video.play();
+      document.getElementById('btnCamara').disabled = false;
+      document.getElementById('btnCamara').textContent = '📷 Cámara';
+    }).catch(function(err) {
+      alert('❌ No se pudo abrir la cámara.\n\n' +
+            'En Huawei: ve a Ajustes > Apps > Arbol φ > Permisos y activa "Cámara".\n\n' +
+            'También puedes usar "🖼️ Galería" para seleccionar una foto.');
+      cerrarCamara();
+    });
+  } else {
+    alert('❌ Tu navegador no soporta acceso a cámara.\nUsa "🖼️ Galería" para seleccionar una foto.');
+    cerrarCamara();
+  }
+}
+
+function cerrarCamara() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(function(track) { track.stop(); });
+    cameraStream = null;
+  }
+  document.getElementById('cameraView').style.display = 'none';
+  document.getElementById('videoPreview').srcObject = null;
+  document.getElementById('btnCamara').disabled = false;
+  document.getElementById('btnCamara').textContent = '📷 Cámara';
+}
+
+function tomarFoto() {
+  const video = document.getElementById('videoPreview');
+  if (!video.videoWidth) {
+    alert('⏳ La cámara aún no está lista. Espera un segundo y vuelve a intentar.');
+    return;
+  }
+  // Capturar frame del video a un canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  // Cerrar cámara
+  cerrarCamara();
+  // Cargar como imagen
+  const img = new Image();
+  img.onload = function() {
+    initImage(img);
+  };
+  img.src = canvas.toDataURL('image/jpeg', 0.92);
+}
+
+function loadFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => initImage(img);
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function initImage(img) {
+  state.img = img;
+  state.imageLoaded = true;
+  state.points = [];
+
+  const container = document.getElementById('photoContainer');
+  const display = document.getElementById('photoDisplay');
+  const canvas = document.getElementById('photoCanvas');
+
+  display.src = img.src;
+  container.style.display = 'block';
+
+  const maxW = Math.min(window.innerWidth - 24, 600);
+  const ratio = img.height / img.width;
+  const w = maxW;
+  const h = w * ratio;
+
+  canvas.width = w;
+  canvas.height = h;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+
+  state.overlayCtx = canvas.getContext('2d');
+
+  state.imgCanvas = document.createElement('canvas');
+  state.imgCanvas.width = img.width;
+  state.imgCanvas.height = img.height;
+  state.imgCtx = state.imgCanvas.getContext('2d');
+  state.imgCtx.drawImage(img, 0, 0);
+
+  state.scaleX = img.width / w;
+  state.scaleY = img.height / h;
+
+  canvas.addEventListener('click', onCanvasClick);
+  canvas.addEventListener('touchend', onTouchEnd, {passive: false});
+  canvas.addEventListener('touchstart', function(e){ e.preventDefault(); }, {passive: false});
+
+  document.getElementById('hintArea').style.display = 'block';
+  document.getElementById('pointsStatus').style.display = 'flex';
+  document.getElementById('scaleArea').style.display = 'block';
+  document.getElementById('btnCalculate').style.display = 'block';
+
+  updateChips();
+  drawOverlay();
+  document.getElementById('resultCard').style.display = 'none';
+}
+
+let lastTouchTime = 0;
+
+function onTouchEnd(e) {
+  e.preventDefault();
+  const touch = e.changedTouches[0];
+  const rect = e.target.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
+  lastTouchTime = Date.now();
+  addPoint(x, y);
+}
+
+function onCanvasClick(e) {
+  // Ignorar si viene de un toque (ya lo manejó onTouchEnd)
+  if (Date.now() - lastTouchTime < 800) return;
+  const rect = e.target.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  addPoint(x, y);
+}
+
+function addPoint(cx, cy) {
+  if (!state.imageLoaded) return;
+  if (state.points.length >= 3) state.points = [];
+  state.points.push({x: cx, y: cy});
+  updateChips();
+  drawOverlay();
+}
+
+function updateChips() {
+  const labels = ['Copa (punta)', 'Base (abajo)', 'Uni\u00f3n tronco-copa'];
+  const icons = ['🟡','🔴','🟢'];
+  const chips = ['chip1','chip2','chip3'];
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById(chips[i]);
+    if (i < state.points.length) {
+      el.className = 'point-chip done';
+      el.textContent = `${icons[i]} \u2713 ${i+1}. ${labels[i]}`;
+    } else {
+      el.className = 'point-chip waiting';
+      el.textContent = `${icons[i]} ${i+1}. ${labels[i]} \u23f3`;
+    }
+  }
+}
+
+function drawOverlay() {
+  const ctx = state.overlayCtx;
+  const cvs = ctx.canvas;
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+  const colors = ['#f5c518', '#e94560', '#00d4aa'];
+  const labels = ['Copa \u2191', 'Base \u2193', 'Uni\u00f3n T/C'];
+
+  state.points.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = colors[i] + '33';
+    ctx.fill();
+    ctx.strokeStyle = colors[i];
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 15px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${i+1} ${labels[i]}`, p.x + 18, p.y + 5);
+
+    // Crosshair
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(p.x - 7, p.y); ctx.lineTo(p.x + 7, p.y);
+    ctx.moveTo(p.x, p.y - 7); ctx.lineTo(p.x, p.y + 7);
+    ctx.stroke();
+  });
+
+  if (state.points.length === 3) {
+    const [p1, p2, p3] = state.points;
+    // H
+    ctx.beginPath();
+    ctx.moveTo(p1.x - 30, p1.y);
+    ctx.lineTo(p1.x - 30, p2.y);
+    ctx.strokeStyle = '#e94560';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#e94560';
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('H (total)', p1.x - 30, (p1.y + p2.y) / 2 - 8);
+
+    // T
+    ctx.beginPath();
+    ctx.moveTo(p2.x + 30, p2.y);
+    ctx.lineTo(p2.x + 30, p3.y);
+    ctx.strokeStyle = '#3498db';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#3498db';
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('T (tronco)', p2.x + 30, (p2.y + p3.y) / 2 - 8);
+
+    // C
+    ctx.beginPath();
+    ctx.moveTo(p1.x + 30, p1.y);
+    ctx.lineTo(p1.x + 30, p3.y);
+    ctx.strokeStyle = '#2ecc71';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#2ecc71';
+    ctx.font = 'bold 13px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('C (copa)', p1.x + 30, (p1.y + p3.y) / 2 - 8);
+  }
+}
+
+function detectPaper() {
+  document.getElementById('paperCm').value = 29.7;
+}
+
+// ====================================================================
+// CÁLCULOS
+// ====================================================================
+function calculateAll() {
+  if (state.points.length < 3) {
+    alert('❌ Marca los 3 puntos en el árbol primero:\n🟡 ① Copa (punta)\n🔴 ② Base (abajo)\n🟢 ③ Unión tronco-copa');
+    return;
+  }
+
+  const [pCopa, pBase, pUnion] = state.points;
+  const H_px = Math.abs(pBase.y - pCopa.y);
+  const T_px = Math.abs(pBase.y - pUnion.y);
+  const C_px = Math.abs(pUnion.y - pCopa.y);
+
+  if (H_px < 5 || T_px < 5 || C_px < 5) {
+    alert('❌ Las medidas son muy pequeñas. Asegúrate de marcar bien los 3 puntos tocando la pantalla.');
+    return;
+  }
+
+  const paperCm = parseFloat(document.getElementById('paperCm').value) || 29.7;
+  const paperMm = paperCm * 10;
+  const canvasH = state.overlayCtx.canvas.height;
+  const mmPerPx = paperMm / canvasH;
+
+  const H_mm = H_px * mmPerPx;
+  const T_mm = T_px * mmPerPx;
+  const C_mm = C_px * mmPerPx;
+
+  const H_phi_T = H_mm / PHI - T_mm;
+  const C_H_phi2 = C_mm - H_mm / PHI2;
+  const C_H_phi = C_mm - H_mm / PHI;
+  const H_phi2_T = H_mm / PHI2 - T_mm;
+  const delta_unified = Math.min(Math.abs(H_phi_T), Math.abs(H_phi2_T));
+  const TC_idx = C_mm > 0 ? (T_mm / C_mm * 100) : Infinity;
+
+  const indices = {
+    H: H_mm, T: T_mm, C: C_mm,
+    'H/φ − T': H_phi_T,
+    'C − H/φ²': C_H_phi2,
+    'C − H/φ': C_H_phi,
+    'H/φ² − T': H_phi2_T,
+    'Δ_unified': delta_unified,
+    'TC index': TC_idx,
+  };
+
+  const diag = diagnosticar(H_phi_T);
+  mostrarResultados(indices, diag, H_px, T_px, C_px, mmPerPx);
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
+}
+
+function diagnosticar(valor) {
+  const distancias = {};
+  for (const [grupo, ref] of Object.entries(REF)) {
+    const z = (valor - ref.mean) / ref.sd;
+    const pct = normalCDF(z) * 100;
+    distancias[grupo] = {
+      z: z.toFixed(3), pct: pct.toFixed(1),
+      dist: Math.abs(valor - ref.mean).toFixed(2),
+      mean: ref.mean, sd: ref.sd, label: ref.label,
+    };
+  }
+
+  let sug, cls;
+  if (valor < 8) { sug = 'AD — Consistente con Alzheimer'; cls = 'ad'; }
+  else if (valor < 18) { sug = 'MCI — Consistente con Deterioro Cognitivo Leve'; cls = 'mci'; }
+  else { sug = 'CNTRL — Consistente con Control Sano'; cls = 'ctrl'; }
+
+  const FIB = [0,1,1,2,3,5,8,13,21,34,55,89];
+  let fibMatch = null;
+  for (let n = 0; n < FIB.length; n++) {
+    if (FIB[n] === 0) continue;
+    if (Math.abs(valor - FIB[n]) / FIB[n] < 0.25) {
+      fibMatch = {n, val: FIB[n], label: `F(${n}) = ${FIB[n]}`};
+      break;
+    }
+  }
+  return {distancias, sug, cls, fibMatch, valor};
+}
+
+function normalCDF(x) {
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const sign=x<0?-1:1; x=Math.abs(x)/Math.sqrt(2);
+  const t=1/(1+p*x);
+  return 0.5*(1+sign*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x)));
+}
+
+function mostrarResultados(indices, diag, H_px, T_px, C_px, mmPerPx) {
+  const card = document.getElementById('resultCard');
+  card.style.display = 'block';
+
+  const header = document.getElementById('resultHeader');
+  header.className = `result-header ${diag.cls}`;
+  document.getElementById('resultTitle').textContent = diag.sug;
+  document.getElementById('resultBadge').textContent = `H/φ−T = ${indices['H/φ − T'].toFixed(2)}`;
+
+  document.getElementById('measuresGrid').innerHTML = `
+    <div class="metric"><div class="label">Altura H</div><div class="value">${indices.H.toFixed(1)} mm</div><div style="font-size:.6em;color:var(--text2)">${H_px} px</div></div>
+    <div class="metric"><div class="label">Tronco T</div><div class="value">${indices.T.toFixed(1)} mm</div><div style="font-size:.6em;color:var(--text2)">${T_px} px</div></div>
+    <div class="metric"><div class="label">Copa C</div><div class="value">${indices.C.toFixed(1)} mm</div><div style="font-size:.6em;color:var(--text2)">${C_px} px</div></div>
+    <div class="metric"><div class="label">Escala</div><div class="value" style="font-size:.85em">${mmPerPx.toFixed(4)}</div><div style="font-size:.6em;color:var(--text2)">mm/px</div></div>
+  `;
+
+  const phiKeys = ['H/φ − T', 'C − H/φ²', 'C − H/φ', 'H/φ² − T', 'Δ_unified', 'TC index'];
+  document.getElementById('phiGrid').innerHTML = phiKeys.map(k =>
+    `<div class="metric"><div class="label">${k}</div><div class="value ${k==='H/φ − T'?'phi-highlight':''}">${indices[k].toFixed(4)}</div></div>`
+  ).join('');
+
+  const fibSec = document.getElementById('fibSection');
+  if (diag.fibMatch) {
+    fibSec.style.display = 'block';
+    document.getElementById('fibDisplay').innerHTML = `
+      <p style="font-size:.85em;margin-bottom:8px">Valor obtenido <strong>≈ ${diag.fibMatch.label}</strong></p>
+      <div>
+        <span class="fib-num">F(5)=5</span>
+        <span class="fib-num">F(6)=8</span>
+        <span class="fib-num ${diag.fibMatch.n===7?'match':''}">F(7)=13</span>
+        <span class="fib-num">F(8)=21</span>
+        <span class="fib-num ${diag.fibMatch.n===9?'match':''}">F(9)=34</span>
+        <span class="fib-num">F(10)=55</span>
+      </div>
+      <p style="font-size:.7em;color:var(--text2);margin-top:8px">Artículo: AD→F(5)=5 · MCI→F(7)=13 · CNTRL→F(9)=34</p>
+    `;
+  } else {
+    fibSec.style.display = 'none';
+  }
+
+  const groups = ['AD','MCI','CNTRL'];
+  const bestGroup = groups.reduce((a,b) =>
+    Math.abs(indices['H/φ − T'] - REF[a].mean) < Math.abs(indices['H/φ − T'] - REF[b].mean) ? a : b
+  );
+
+  document.getElementById('diagTable').innerHTML = `
+    <tr><th>Grupo</th><th>Media ref.</th><th>Tu valor</th><th>Distancia</th><th>Z-score</th><th>Percentil</th></tr>
+    ${groups.map(g => {
+      const d = diag.distancias[g];
+      const isBest = g === bestGroup;
+      return `<tr class="${isBest?'highlight':''}">
+        <td>${isBest?'⭐ ':''}${d.label}</td>
+        <td>${d.mean}</td>
+        <td>${indices['H/φ − T'].toFixed(2)}</td>
+        <td class="${isBest?'best':''}">${d.dist}</td>
+        <td>${d.z}</td>
+        <td>${d.pct}%</td>
+      </tr>`;
+    }).join('')}
+  `;
+
+  document.getElementById('conclusionNote').innerHTML = `
+    <strong>🎯 Sugerencia:</strong> ${diag.sug}<br><br>
+    📊 <strong>Precisión del modelo M3 del estudio:</strong><br>
+    AD vs resto AUC = 0.855 · MCI vs resto AUC = 0.736 · CNTRL vs resto AUC = 0.911<br>
+    Macro AUC = 0.834 · p &lt; 0.0001<br><br>
+    ⚠️ <strong>Herramienta de investigación.</strong> No reemplaza evaluación clínica.
+    Basado en Stanzani Maserati &amp; Zama (2026), Sci Rep.
+  `;
+}
+
+// ====================================================================
+// REINICIO
+// ====================================================================
+function resetAll() {
+  cerrarCamara();
+  state = {imageLoaded:false, points:[], img:null, imgCanvas:null, imgCtx:null, overlayCtx:null, scaleX:1, scaleY:1};
+  document.getElementById('cameraView').style.display = 'none';
+  document.getElementById('hintArea').style.display = 'none';
+  document.getElementById('pointsStatus').style.display = 'none';
+  document.getElementById('scaleArea').style.display = 'none';
+  document.getElementById('btnCalculate').style.display = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
